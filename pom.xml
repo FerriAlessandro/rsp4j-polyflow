@@ -17,7 +17,7 @@
         <module>api</module>
         <module>io</module>
         <module>web</module>
-        <module>polyflow</module>
+        <module>yasper</module>
     </modules>
 
     <dependencyManagement>
