@@ -19,6 +19,11 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>org.statefulj</groupId>
+            <artifactId>statefulj-fsm</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.streamreasoning.rsp4j</groupId>
             <artifactId>api</artifactId>
             <version>1.0.1</version>
