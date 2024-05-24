@@ -30,3 +30,5 @@ rsp-spin-converter/*
 demoApplication.log
 
 install.sh
+
+.idea
