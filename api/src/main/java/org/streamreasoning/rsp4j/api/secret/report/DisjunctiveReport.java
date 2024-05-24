@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConjunctiveReport implements Report {
+public class DisjunctiveReport implements Report {
 
     List<ReportingStrategy> strategies = new ArrayList<>();
 
     @Override
     public boolean report(Window w, Content<?, ?, ?> c, long tapp, long tsys) {
-        return strategies.stream().allMatch(strategy -> strategy.match(w, c, tapp, tsys));
+        return strategies.stream().anyMatch(strategy -> strategy.match(w, c, tapp, tsys));
     }
 
     @Override
@@ -29,8 +29,8 @@ public class ConjunctiveReport implements Report {
     }
 
 
-    public static Report fromStrategies(ReportingStrategy... strategies){
-        Report report = new ConjunctiveReport();
+    public static Report fromStrategies(ReportingStrategy... strategies) {
+        Report report = new DisjunctiveReport();
         Arrays.stream(strategies).forEach(s -> report.add(s));
         return report;
     }

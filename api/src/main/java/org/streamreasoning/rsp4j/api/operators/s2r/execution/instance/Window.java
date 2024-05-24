@@ -6,5 +6,9 @@ public interface Window {
 
     long getO();
 
+    void evict();
+
+    boolean isEvicted();
+
 }
 

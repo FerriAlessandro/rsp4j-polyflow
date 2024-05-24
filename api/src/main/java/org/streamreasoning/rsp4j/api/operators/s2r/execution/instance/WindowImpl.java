@@ -4,6 +4,7 @@ package org.streamreasoning.rsp4j.api.operators.s2r.execution.instance;
 public class WindowImpl implements Window {
 
     private long c, o;
+    private boolean evicted = false;
 
     public WindowImpl(long o, long c) {
         this.o = o;
@@ -16,6 +17,16 @@ public class WindowImpl implements Window {
 
     public long getO() {
         return o;
+    }
+
+    @Override
+    public void evict() {
+        evicted = true;
+    }
+
+    @Override
+    public boolean isEvicted() {
+        return evicted;
     }
 
     @Override

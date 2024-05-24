@@ -9,4 +9,8 @@ public interface Content<I, W, R> {
 
     R coalesce();
 
+    default boolean isClosed() {
+        return false;
+    }
+
 }
