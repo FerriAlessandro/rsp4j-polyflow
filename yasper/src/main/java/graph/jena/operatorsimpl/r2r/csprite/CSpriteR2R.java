@@ -1,8 +1,8 @@
 package graph.jena.operatorsimpl.r2r.csprite;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
-import graph.jena.operatorsimpl.r2r.jena.BGP;
-import graph.jena.operatorsimpl.r2r.jena.TP;
+import graph.jena.operatorsimpl.r2r.rsp.BGP;
+import graph.jena.operatorsimpl.r2r.rsp.TP;
 import org.apache.jena.vocabulary.RDF;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 

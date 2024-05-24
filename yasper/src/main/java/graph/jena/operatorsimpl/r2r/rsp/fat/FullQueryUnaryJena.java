@@ -1,4 +1,4 @@
-package graph.jena.operatorsimpl.r2r.jena;
+package graph.jena.operatorsimpl.r2r.rsp.fat;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.graph.Node;

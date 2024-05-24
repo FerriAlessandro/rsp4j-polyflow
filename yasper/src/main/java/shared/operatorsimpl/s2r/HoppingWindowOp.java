@@ -19,9 +19,9 @@ import org.streamreasoning.rsp4j.api.secret.time.Time;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CSPARQLStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements StreamToRelationOperator<I, W, R> {
+public class HoppingWindowOp<I, W, R extends Iterable<?>> implements StreamToRelationOperator<I, W, R> {
 
-    private static final Logger log = Logger.getLogger(CSPARQLStreamToRelationOpImpl.class);
+    private static final Logger log = Logger.getLogger(HoppingWindowOp.class);
     protected final Ticker ticker;
     protected Tick tick;
     protected final Time time;
@@ -36,8 +36,8 @@ public class CSPARQLStreamToRelationOpImpl<I, W, R extends Iterable<?>> implemen
     private long t0;
     private long toi;
 
-    public CSPARQLStreamToRelationOpImpl(Tick tick, Time time, String name, ContentFactory<I, W, R> cf, TimeVaryingFactory<R> tvFactory, ReportGrain grain, Report report,
-                                         long width, long slide){
+    public HoppingWindowOp(Tick tick, Time time, String name, ContentFactory<I, W, R> cf, TimeVaryingFactory<R> tvFactory, ReportGrain grain, Report report,
+                           long width, long slide) {
 
         this.tvFactory = tvFactory;
         this.tick = tick;
@@ -116,7 +116,7 @@ public class CSPARQLStreamToRelationOpImpl<I, W, R extends Iterable<?>> implemen
     /**
      * Creates all the windows that can possibly contain the given timestamp
      */
-    private void scope(long t_e){
+    private void scope(long t_e) {
 
         long c_sup = (long) Math.ceil(((double) Math.abs(t_e - t0) / (double) slide)) * slide;
         long o_i = c_sup - width;
@@ -163,31 +163,38 @@ public class CSPARQLStreamToRelationOpImpl<I, W, R extends Iterable<?>> implemen
                 .filter(w -> report.report(w, getWindowContent(w), t_e, System.currentTimeMillis()))
                 .max(Comparator.comparingLong(Window::getC))
                 .ifPresent(window -> ticker.tick(t_e, window));
+
+        log.debug("Element (" + arg + "," + ts + ") was processed");
+
     }
 
 
     @Override
-    public TimeVarying<R> get() {return tvFactory.create(this, name);}
+    public TimeVarying<R> get() {
+        return tvFactory.create(this, name);
+    }
 
     private Content<I, W, R> getWindowContent(Window w) {
         return active_windows.containsKey(w) ? active_windows.get(w) : cf.createEmpty();
     }
 
     private void schedule_for_eviction(Window w) {
+        w.evict();
         to_evict.add(w);
     }
 
     @Override
-    public void evict(){
+    public void evict() {
         to_evict.forEach(w -> {
+
             log.debug("Evicting [" + w.getO() + "," + w.getC() + ")");
-            active_windows.remove(w);
-            if (toi < w.getC())
-                toi = w.getC() + slide;
+//            active_windows.remove(w);
+//            if (toi < w.getC())
+//                toi = w.getC() + slide;
+
         });
         to_evict.clear();
     }
-
 
 
 }

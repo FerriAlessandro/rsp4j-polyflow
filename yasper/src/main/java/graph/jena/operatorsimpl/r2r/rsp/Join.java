@@ -1,4 +1,4 @@
-package graph.jena.operatorsimpl.r2r.jena;
+package graph.jena.operatorsimpl.r2r.rsp;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.sparql.algebra.Algebra;
@@ -10,7 +10,6 @@ import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class Join implements RelationToRelationOperator<JenaGraphOrBindings> {

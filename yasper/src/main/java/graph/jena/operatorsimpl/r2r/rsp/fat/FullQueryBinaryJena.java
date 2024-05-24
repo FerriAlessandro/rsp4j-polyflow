@@ -1,4 +1,4 @@
-package graph.jena.operatorsimpl.r2r.jena;
+package graph.jena.operatorsimpl.r2r.rsp.fat;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.graph.Graph;
@@ -6,7 +6,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.compose.Union;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetImpl;
 import org.apache.jena.sparql.core.ResultBinding;

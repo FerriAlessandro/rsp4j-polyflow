@@ -1,4 +1,4 @@
-package graph.jena.operatorsimpl.r2r.jena;
+package graph.jena.operatorsimpl.r2r.rsp;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.sparql.algebra.op.OpProject;

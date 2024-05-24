@@ -1,8 +1,8 @@
 package operators.r2r;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
-import graph.jena.operatorsimpl.r2r.jena.BGP;
-import graph.jena.operatorsimpl.r2r.jena.TP;
+import graph.jena.operatorsimpl.r2r.rsp.BGP;
+import graph.jena.operatorsimpl.r2r.rsp.TP;
 import graph.jena.operatorsimpl.r2r.csprite.CSpriteR2R;
 import graph.jena.operatorsimpl.r2r.csprite.HierarchySchema;
 import graph.jena.operatorsimpl.r2r.csprite.R2RUpwardExtension;

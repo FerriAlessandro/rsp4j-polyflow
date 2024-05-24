@@ -5,8 +5,6 @@ import graph.jena.sds.TimeVaryingFactoryJena;
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.shacl.Shapes;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.jupiter.api.Test;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
@@ -16,12 +14,12 @@ import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVaryingFactory;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
-import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
+import org.streamreasoning.rsp4j.api.secret.report.ConjunctiveReport;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import shared.contentimpl.factories.AccumulatorContentFactory;
-import shared.operatorsimpl.s2r.CSPARQLStreamToRelationOpImpl;
+import shared.operatorsimpl.s2r.HoppingWindowOp;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,7 +30,7 @@ public class StreamToRelationOpTest {
 
         //CREATE S2R COMPONENT
 
-        Report report = new ReportImpl();
+        Report report = new ConjunctiveReport();
         report.add(new OnWindowClose());
         Tick tick = Tick.TIME_DRIVEN;
         ReportGrain report_grain = ReportGrain.SINGLE;
@@ -55,7 +53,7 @@ public class StreamToRelationOpTest {
         TimeVaryingFactory<JenaGraphOrBindings> tvFactory = new TimeVaryingFactoryJena();
 
         StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp =
-                new CSPARQLStreamToRelationOpImpl<>(
+                new HoppingWindowOp<>(
                         tick,
                         instance,
                         "w1",

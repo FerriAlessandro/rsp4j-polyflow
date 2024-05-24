@@ -1,8 +1,8 @@
 package graph.jena.examples;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
-import graph.jena.operatorsimpl.r2r.jena.FullQueryBinaryJena;
-import graph.jena.operatorsimpl.r2r.jena.FullQueryUnaryJena;
+import graph.jena.operatorsimpl.r2r.rsp.fat.FullQueryBinaryJena;
+import graph.jena.operatorsimpl.r2r.rsp.fat.FullQueryUnaryJena;
 import graph.jena.operatorsimpl.r2s.RelationToStreamOpImpl;
 import graph.jena.sds.SDSJena;
 import graph.jena.sds.TimeVaryingFactoryJena;
@@ -22,14 +22,14 @@ import org.streamreasoning.rsp4j.api.querying.Task;
 import org.streamreasoning.rsp4j.api.querying.TaskImpl;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVaryingFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
-import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
+import org.streamreasoning.rsp4j.api.secret.report.ConjunctiveReport;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import shared.contentimpl.factories.AccumulatorContentFactory;
 import shared.operatorsimpl.r2r.DAG.DAGImpl;
-import shared.operatorsimpl.s2r.CSPARQLStreamToRelationOpImpl;
+import shared.operatorsimpl.s2r.HoppingWindowOp;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class polyflowExample_twoStreams {
         JenaBindingStream outStream = new JenaBindingStream("out");
 
         // Engine properties
-        Report report = new ReportImpl();
+        Report report = new ConjunctiveReport();
         report.add(new OnWindowClose());
 
         Tick tick = Tick.TIME_DRIVEN;
@@ -69,7 +69,7 @@ public class polyflowExample_twoStreams {
         ContinuousProgram<Graph, Graph, JenaGraphOrBindings, Binding> cp = new ContinuousProgram<>();
 
         StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_one =
-                new CSPARQLStreamToRelationOpImpl<>(
+                new HoppingWindowOp<>(
                         tick,
                         instance,
                         "w1",
@@ -81,7 +81,7 @@ public class polyflowExample_twoStreams {
                         1000);
 
         StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_two =
-                new CSPARQLStreamToRelationOpImpl<>(
+                new HoppingWindowOp<>(
                         tick,
                         instance,
                         "w2",

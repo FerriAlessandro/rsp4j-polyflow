@@ -1,6 +1,6 @@
 package relational.examples;
 
-import shared.operatorsimpl.s2r.CSPARQLStreamToRelationOpImpl;
+import shared.operatorsimpl.s2r.HoppingWindowOp;
 import org.javatuples.Tuple;
 import org.streamreasoning.rsp4j.api.coordinators.ContinuousProgram;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
@@ -11,7 +11,7 @@ import org.streamreasoning.rsp4j.api.querying.Task;
 import org.streamreasoning.rsp4j.api.querying.TaskImpl;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVaryingFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
-import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
+import org.streamreasoning.rsp4j.api.secret.report.ConjunctiveReport;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
@@ -43,7 +43,7 @@ public class polyflow_FilterContent {
             DataStream<Tuple> outStream = new RowStream("out");
 
             // Engine properties
-            Report report = new ReportImpl();
+            Report report = new ConjunctiveReport();
             report.add(new OnWindowClose());
 
             Tick tick = Tick.TIME_DRIVEN;
@@ -125,8 +125,8 @@ public class polyflow_FilterContent {
             //TableWrapper because we need the interface convertible on the W generic type
             ContinuousProgram<Tuple, Tuple, Table, Tuple> cp = new ContinuousProgram<>();
 
-            CSPARQLStreamToRelationOpImpl<Tuple, Tuple, Table> s2rOp_1 =
-                    new CSPARQLStreamToRelationOpImpl<>(
+            HoppingWindowOp<Tuple, Tuple, Table> s2rOp_1 =
+                    new HoppingWindowOp<>(
                             tick,
                             instance,
                             "w1",
@@ -136,8 +136,8 @@ public class polyflow_FilterContent {
                             report,
                             1000,
                             1000);
-            CSPARQLStreamToRelationOpImpl<Tuple, Tuple, Table> s2rOp_2 =
-                    new CSPARQLStreamToRelationOpImpl<>(
+            HoppingWindowOp<Tuple, Tuple, Table> s2rOp_2 =
+                    new HoppingWindowOp<>(
                             tick,
                             instance,
                             "w2",

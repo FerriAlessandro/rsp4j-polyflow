@@ -45,4 +45,10 @@ public class FilterContent <I, W, R> implements Content<I, W, R> {
         R result = content.stream().map(f2).reduce(emptyContent,  (x, y) -> sumR.apply(x,y));
         return result;
     }
+
+    @Override
+    public boolean isClosed() {
+        return false;
+    }
+
 }

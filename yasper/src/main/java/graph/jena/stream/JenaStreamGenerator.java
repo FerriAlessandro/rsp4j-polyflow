@@ -19,7 +19,7 @@ public class JenaStreamGenerator {
     private static final String PREFIX = "http://test/";
     private static final Long TIMEOUT = 1000l;
 
-    private final String[] colors = new String[]{"Blue", "Green", "Red", "Yellow", "Black", "Grey", "White"};
+    private final String[] colors = new String[]{"Blue", "Green", "Red", "Yellow"};
     private final Map<String, DataStream<Graph>> activeStreams;
     private final AtomicBoolean isStreaming;
     private final Random randomGenerator;
@@ -69,14 +69,19 @@ public class JenaStreamGenerator {
     }
 
     private void generateDataAndAddToStream(DataStream<Graph> stream, long ts) {
-        RDF instance = RDFUtils.getInstance();
         Graph graph = GraphMemFactory.createGraphMem();
 
         Node p = NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        Node at = NodeFactory.createURI("at");
 
         if(stream.getName().equals("http://test/stream1")) {
-            graph.add(NodeFactory.createURI(PREFIX + "S" + streamIndexCounter.incrementAndGet()), p, NodeFactory.createURI(PREFIX + selectRandomColor()));
-            graph.add(NodeFactory.createURI(PREFIX + "S" + streamIndexCounter.incrementAndGet()), p, NodeFactory.createURI(PREFIX + "Black"));
+            long l = streamIndexCounter.incrementAndGet();
+            graph.add(NodeFactory.createURI(PREFIX + "S" + l), p, NodeFactory.createURI(PREFIX + selectRandomColor()));
+            graph.add(NodeFactory.createURI(PREFIX + "S" + l), at, NodeFactory.createURI(PREFIX + ts));
+            long l1 = streamIndexCounter.incrementAndGet();
+            graph.add(NodeFactory.createURI(PREFIX + "S" + l1), p, NodeFactory.createURI(PREFIX + "Black"));
+            graph.add(NodeFactory.createURI(PREFIX + "S" + l1), at, NodeFactory.createURI(PREFIX + ts));
+
         }
         else{
             graph.add(NodeFactory.createURI(PREFIX + "S" + streamIndexCounter.incrementAndGet()), p, NodeFactory.createURI(PREFIX + randomGenerator.nextInt(10)));

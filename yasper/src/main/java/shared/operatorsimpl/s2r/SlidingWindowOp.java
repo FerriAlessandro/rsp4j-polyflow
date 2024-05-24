@@ -19,9 +19,9 @@ import org.streamreasoning.rsp4j.api.secret.time.Time;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CQELSStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements StreamToRelationOperator<I, W, R> {
+public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRelationOperator<I, W, R> {
 
-    private static final Logger log = Logger.getLogger(CSPARQLStreamToRelationOpImpl.class);
+    private static final Logger log = Logger.getLogger(HoppingWindowOp.class);
     protected final Ticker ticker;
     protected Tick tick;
     protected final Time time;
@@ -37,8 +37,8 @@ public class CQELSStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements
     private Map<I, Long> d_stream;
 
 
-    public CQELSStreamToRelationOpImpl(Tick tick, Time time, String name, ContentFactory<I, W, R> cf, TimeVaryingFactory<R> tvFactory, ReportGrain grain, Report report,
-                                         long a){
+    public SlidingWindowOp(Tick tick, Time time, String name, ContentFactory<I, W, R> cf, TimeVaryingFactory<R> tvFactory, ReportGrain grain, Report report,
+                           long a) {
 
         this.tvFactory = tvFactory;
         this.tick = tick;
@@ -83,7 +83,9 @@ public class CQELSStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements
 
 
     @Override
-    public TimeVarying<R> get() {return tvFactory.create(this, name);}
+    public TimeVarying<R> get() {
+        return tvFactory.create(this, name);
+    }
 
 
     @Override
@@ -109,11 +111,10 @@ public class CQELSStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements
     private Window scope(long t_e) {
         long o_i = t_e - a;
         log.debug("Calculating the Windows to Open. First one opens at [" + o_i + "] and closes at [" + t_e + "]");
-        log.debug("Computing Window [" + o_i + "," + (o_i + a) + ") if absent");
-
-        WindowImpl active = new WindowImpl(o_i, t_e);
-        active_windows.computeIfAbsent(active, window -> cf.create());
-        return active;
+        log.debug("Computing Window [" + o_i + "," + t_e + ") if absent");
+        Window w;
+        active_windows.computeIfAbsent(w = new WindowImpl(o_i, t_e), window -> cf.create());
+        return w;
     }
 
     @Override
@@ -126,37 +127,61 @@ public class CQELSStreamToRelationOpImpl<I, W, R extends Iterable<?>> implements
             throw new OutOfOrderElementException("(" + arg + "," + ts + ")");
         }
 
-        Window active = scope(t_e);
-        Content<I, W, R> content = active_windows.get(active);
+        Window lastestWindow = scope(t_e);
 
-        r_stream.entrySet().stream().filter(ee -> ee.getValue() < active.getO()).forEach(ee -> d_stream.put(ee.getKey(), ee.getValue()));
+        //Add data to all overlapping window
+        active_windows.keySet().forEach(
+                w -> {
+                    log.debug("Processing Window [" + w.getO() + "," + w.getC() + ") for element (" + arg + "," + ts + ")");
+                    /*[w.getO() ... t_e ... w.get() ) */
+                    if (w.getO() <= t_e && t_e < w.getC()) {
+                        log.debug("Adding element [" + arg + "] to Window [" + w.getO() + "," + w.getC() + ")");
+                        active_windows.get(w).add(arg);
+                        /*[w.getO() , w.get() ) -> t_e */
+                    } else if (t_e > w.getC()) {
+                        log.debug("Scheduling for Eviction [" + w.getO() + "," + w.getC() + ")");
+                        schedule_for_eviction(w);
+                    } else if (lastestWindow.getO() <= t_e && t_e < lastestWindow.getC()) {
+                        //evict all those that are not going to be reported
+                        log.debug("Scheduling for Eviction [" + w.getO() + "," + w.getC() + ")");
+                        schedule_for_eviction(w);
+                    }
+                });
 
-        r_stream.entrySet().stream().filter(ee -> ee.getValue() >= active.getO()).map(Map.Entry::getKey).forEach(content::add);
 
-        r_stream.put(arg, ts);
-        content.add(arg);
+        Content<I, W, R> content = active_windows.get(lastestWindow);
 
-        if (report.report(active, content, t_e, System.currentTimeMillis())) {
-            ticker.tick(t_e, active);
+//        r_stream.entrySet().stream().filter(ee -> ee.getValue() < lastestWindow.getO()).forEach(ee -> d_stream.put(ee.getKey(), ee.getValue()));
+//
+//        r_stream.entrySet().stream().filter(ee -> ee.getValue() >= lastestWindow.getO()).map(Map.Entry::getKey).forEach(content::add);
+//
+//        r_stream.put(arg, ts);
+//        content.add(arg);
+
+        if (report.report(lastestWindow, content, t_e, System.currentTimeMillis())) {
+            ticker.tick(t_e, lastestWindow);
         }
 
-
         //REMOVE ALL THE WINDOWS THAT CONTAIN DSTREAM ELEMENTS
-        //Theoretically active window has always size 1
-        d_stream.entrySet().forEach(ee -> {
-            log.debug("Evicting [" + ee + "]");
-
-            active_windows.forEach((window, content1) -> {
-                if (window.getO() <= ee.getValue() && window.getC() < ee.getValue())
-                    schedule_for_eviction(window);
-
-            });
-            r_stream.remove(ee);
-        });
+        //Theoretically lastestWindow window has always size 1
+//        d_stream.entrySet().forEach(ee -> {
+//            log.debug("Evicting [" + ee + "]");
+//
+//            active_windows.forEach((window, content1) -> {
+//                if (window.getO() <= ee.getValue() && window.getC() < ee.getValue())
+//                    schedule_for_eviction(window);
+//
+//            });
+//            r_stream.remove(ee);
+//        });
 
     }
+
     private void schedule_for_eviction(Window w) {
-        to_evict.add(w);
+        if (!w.isEvicted()) {
+            w.evict();
+            to_evict.add(w);
+        }
     }
 
     @Override

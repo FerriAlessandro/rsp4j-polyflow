@@ -27,4 +27,10 @@ public class EmptyContent<I,W,R> implements Content<I, W, R> {
     public R coalesce() {
         return o;
     }
+
+    @Override
+    public boolean isClosed() {
+        return true;
+    }
+
 }

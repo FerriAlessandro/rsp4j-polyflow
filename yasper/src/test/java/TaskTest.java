@@ -1,5 +1,5 @@
 import graph.jena.datatypes.JenaGraphOrBindings;
-import graph.jena.operatorsimpl.r2r.jena.FullQueryUnaryJena;
+import graph.jena.operatorsimpl.r2r.rsp.fat.FullQueryUnaryJena;
 import graph.jena.operatorsimpl.r2s.RelationToStreamOpImpl;
 import graph.jena.sds.SDSJena;
 import graph.jena.sds.TimeVaryingFactoryJena;
@@ -20,7 +20,7 @@ import org.streamreasoning.rsp4j.api.querying.Task;
 import org.streamreasoning.rsp4j.api.querying.TaskImpl;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVaryingFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
-import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
+import org.streamreasoning.rsp4j.api.secret.report.ConjunctiveReport;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
@@ -28,7 +28,7 @@ import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import relational.stream.RowStream;
 import shared.contentimpl.factories.AccumulatorContentFactory;
 import shared.operatorsimpl.r2r.DAG.DAGImpl;
-import shared.operatorsimpl.s2r.CSPARQLStreamToRelationOpImpl;
+import shared.operatorsimpl.s2r.HoppingWindowOp;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class TaskTest {
         JenaStreamGenerator generator = new JenaStreamGenerator();
         DataStream<Graph> inputStreamColors = generator.getStream("http://test/stream1");
         JenaBindingStream outStream = new JenaBindingStream("out");
-        Report report = new ReportImpl();
+        Report report = new ConjunctiveReport();
         report.add(new OnWindowClose());
         Tick tick = Tick.TIME_DRIVEN;
         ReportGrain report_grain = ReportGrain.SINGLE;
@@ -62,7 +62,7 @@ public class TaskTest {
             Graph res_content = m1.union(m2).getGraph();
             return new JenaGraphOrBindings(res_content);
         }, emptyContent);
-        StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_one = new CSPARQLStreamToRelationOpImpl<>(tick, instance, "w1", accumulatorContentFactory, tvFactory, report_grain, report, 1000, 1000);
+        StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_one = new HoppingWindowOp<>(tick, instance, "w1", accumulatorContentFactory, tvFactory, report_grain, report, 1000, 1000);
 
 
         List<String> s2r_names = new ArrayList<>();
@@ -79,7 +79,7 @@ public class TaskTest {
         /*---------------Test the addS2ROperator method-------------*/
 
         //Create a dummy S2R to check if the Task correctly throws an exception when an S2R with the same name is already present
-        StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_dummy = new CSPARQLStreamToRelationOpImpl<>(tick, instance, "w1", accumulatorContentFactory, tvFactory, report_grain, report, 500, 500);
+        StreamToRelationOperator<Graph, Graph, JenaGraphOrBindings> s2rOp_dummy = new HoppingWindowOp<>(tick, instance, "w1", accumulatorContentFactory, tvFactory, report_grain, report, 500, 500);
 
 
         noDuplicateTests(s2rOp_dummy, task);

@@ -1,10 +1,9 @@
-package graph.jena.operatorsimpl.r2r.jena;
+package graph.jena.operatorsimpl.r2r.rsp;
 
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpTriple;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
