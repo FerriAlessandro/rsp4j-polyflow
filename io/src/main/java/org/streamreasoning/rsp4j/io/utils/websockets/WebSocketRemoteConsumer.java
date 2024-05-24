@@ -2,6 +2,7 @@ package org.streamreasoning.rsp4j.io.utils.websockets;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import org.streamreasoning.rsp4j.io.utils.serialization.StringSerializationStrategy;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class WebSocketRemoteConsumer<T> implements Consumer<T> {
     }
 
     @Override
-    public void notify(T arg, long ts) {
+    public void notify(DataStream<T> inputStream, T arg, long ts) {
         try {
             String serializedString = serializationStrategy.serialize(arg);
             session.getRemote().sendString(serializedString);

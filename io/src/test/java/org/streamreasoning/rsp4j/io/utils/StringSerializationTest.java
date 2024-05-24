@@ -4,11 +4,12 @@ import org.apache.commons.rdf.api.Graph;
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.api.RDF;
 import org.apache.commons.rdf.simple.SimpleRDF;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.streamreasoning.rsp4j.io.utils.serialization.JenaRDFSerializationStrategy;
 import org.streamreasoning.rsp4j.io.utils.serialization.StringSerializationStrategy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class StringSerializationTest {
 

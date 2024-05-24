@@ -1,7 +1,7 @@
 import org.apache.commons.rdf.api.Graph;
 import org.apache.commons.rdf.jena.JenaRDF;
 import org.apache.jena.rdf.model.Model;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.streamreasoning.rsp.SLD;
 import org.streamreasoning.rsp.builders.DistributionBuilder;
 import org.streamreasoning.rsp.enums.Format;
@@ -9,8 +9,10 @@ import org.streamreasoning.rsp.enums.License;
 import org.streamreasoning.rsp.enums.Protocol;
 import org.streamreasoning.rsp.enums.Security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
 
 public class SLDTest {
 

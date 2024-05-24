@@ -8,7 +8,8 @@ import org.streamreasoning.rsp4j.io.utils.RDFBase;
 import org.streamreasoning.rsp4j.io.utils.parsing.JenaRDFCommonsParsingStrategy;
 import spark.Spark;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 
 public class HTTPPullTest {
 

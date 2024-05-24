@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.io.utils;
 
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class BufferedConsumer<T> implements Consumer<T> {
     }
 
     @Override
-    public void notify(T arg, long ts) {
+    public void notify(DataStream<T> inputStream, T arg, long ts) {
         this.buffer.add(arg);
     }
 

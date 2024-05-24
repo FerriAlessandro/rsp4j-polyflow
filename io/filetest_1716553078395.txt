@@ -1,0 +1,2 @@
+<http://test/subject1> <http://test/property1> <http://test/object1>.
+<http://test/subject2> <http://test/property2> <http://test/object2>.

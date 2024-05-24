@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * Wrapper class for {@link DataStream} providing functionality for interaction with consumers.
@@ -31,7 +30,7 @@ public class DataStreamImpl<T> implements DataStream<T> {
 
     @Override
     public void put(T t, long ts) {
-        consumers.forEach(graphConsumer -> graphConsumer.notify(t, ts));
+        consumers.forEach(graphConsumer -> graphConsumer.notify(this, t, ts));
 
     }
 
@@ -58,9 +57,9 @@ public class DataStreamImpl<T> implements DataStream<T> {
         return stream_uri;
     }
 
-    public <R> DataStreamImpl<R> map(Function<? super T, ? extends R> mapper, String streamURL){
+    public <R> DataStreamImpl<R> map(Function<? super T, ? extends R> mapper, String streamURL) {
         DataStreamImpl<R> newStream = new DataStreamImpl<>(streamURL);
-        this.addConsumer((e, ts) -> newStream.put(mapper.apply(e),ts));
+        this.addConsumer((s, e, t) -> newStream.put(mapper.apply(e), t));
         return newStream;
     }
 }

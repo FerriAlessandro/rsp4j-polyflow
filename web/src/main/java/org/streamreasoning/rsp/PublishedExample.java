@@ -22,7 +22,7 @@ public class PublishedExample {
 
         distribution[0].start(i -> "Colour: " + i);
 
-        stream.addConsumer((arg, ts) -> {System.out.println(arg + " " + ts);});
+        stream.addConsumer((s, arg, ts) -> {System.out.println(arg + " " + ts);});
 
         SLD.Publisher publisher1 = stream.publisher();
 

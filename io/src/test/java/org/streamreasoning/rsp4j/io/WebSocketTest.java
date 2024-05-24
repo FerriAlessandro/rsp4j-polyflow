@@ -14,7 +14,8 @@ import org.streamreasoning.rsp4j.io.utils.RDFBase;
 import org.streamreasoning.rsp4j.io.utils.parsing.JenaRDFCommonsParsingStrategy;
 import org.streamreasoning.rsp4j.io.utils.serialization.JenaRDFSerializationStrategy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class WebSocketTest {
     public static Graph createGraph() {

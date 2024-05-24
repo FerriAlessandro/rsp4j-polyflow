@@ -56,7 +56,7 @@ public class WebSocketDistribution<E> extends AbstractDistribution<E> {
         if (source) {
             WebsocketClientSource<E> websocketSource = new WebsocketClientSource<E>(access, parsingStrategy);
             websocketSource.startSocket();
-            websocketSource.addConsumer((arg, ts) -> dataStream.put(arg, ts));
+            websocketSource.addConsumer((s, arg, ts) -> dataStream.put(arg, ts));
         }
         return dataStream;
     }

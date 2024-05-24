@@ -74,7 +74,7 @@ public class WebsocketClientSource<T> implements DataStream<T> {
 
     @Override
     public void put(T e, long ts) {
-        consumers.forEach(graphConsumer -> graphConsumer.notify(e, ts));
+        consumers.forEach(graphConsumer -> graphConsumer.notify(this, e, ts));
 
     }
 

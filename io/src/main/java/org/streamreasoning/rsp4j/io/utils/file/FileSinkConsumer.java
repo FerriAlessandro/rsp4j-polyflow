@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.io.utils.file;
 
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import org.streamreasoning.rsp4j.io.utils.serialization.StringSerializationStrategy;
 
 import java.io.BufferedWriter;
@@ -20,7 +21,7 @@ public class FileSinkConsumer<T> implements Consumer<T> {
     }
 
     @Override
-    public void notify(T arg, long ts) {
+    public void notify(DataStream<T> inputStream, T arg, long ts) {
         Path path = Paths.get(this.path);
 
         // create file and write lines to file
@@ -39,4 +40,5 @@ public class FileSinkConsumer<T> implements Consumer<T> {
             e.printStackTrace();
         }
     }
+
 }

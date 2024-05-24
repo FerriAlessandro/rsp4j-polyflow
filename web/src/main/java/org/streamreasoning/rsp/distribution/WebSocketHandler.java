@@ -6,6 +6,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class WebSocketHandler<E> implements Consumer<E> {
     }
 
     @Override
-    public void notify(E arg, long ts) {
+    public void notify(DataStream<E> inputStream, E arg, long ts) {
         onMessage(null, arg.toString());
     }
 }

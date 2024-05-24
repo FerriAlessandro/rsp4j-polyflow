@@ -10,6 +10,7 @@ import org.streamreasoning.rsp.SLD;
 import org.streamreasoning.rsp.enums.Format;
 import org.streamreasoning.rsp.enums.License;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import org.streamreasoning.rsp4j.io.utils.parsing.ParsingResult;
 import org.streamreasoning.rsp4j.io.utils.parsing.ParsingStrategy;
 
@@ -58,7 +59,7 @@ public class HTTPDistribution<E> extends AbstractDistribution<E> {
             //TODO actually, we need to pass the subset that interests the stream
             dataStream.addConsumer(new Consumer<E>() {
                 @Override
-                public void notify(E arg, long ts) {
+                public void notify(DataStream<E> inputStream, E arg, long ts) {
                     state.add(new Pair<>(arg, ts));
                 }
             });
