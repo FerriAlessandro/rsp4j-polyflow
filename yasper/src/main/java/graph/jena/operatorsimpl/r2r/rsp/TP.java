@@ -3,6 +3,7 @@ package graph.jena.operatorsimpl.r2r.jena;
 import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpTriple;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -15,13 +16,13 @@ import java.util.function.UnaryOperator;
 public class TP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelationOperator<JenaGraphOrBindings> {
 
 
-    private OpTriple bgp;
+    private OpBGP bgp;
 
     private List<String> tvgNames;
 
     private String unaryOpName;
 
-    public TP(OpTriple bgp, List<String> tvgNames, String unaryOpName) {
+    public TP(OpBGP bgp, List<String> tvgNames, String unaryOpName) {
         this.bgp = bgp;
         this.tvgNames = tvgNames;
         this.unaryOpName = unaryOpName;
@@ -29,7 +30,17 @@ public class TP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelatio
     }
 
     public JenaGraphOrBindings eval(List<JenaGraphOrBindings> datasets) {
-        return null;
+        QueryIterator exec = Algebra.exec(bgp, datasets.get(0).getContent());
+
+        List<Binding> res = new ArrayList<>();
+
+        while (exec.hasNext()) {
+            res.add(exec.next());
+        }
+
+        JenaGraphOrBindings ds = new JenaGraphOrBindings();
+        ds.setResult(res);
+        return ds;
     }
 
 
@@ -42,10 +53,6 @@ public class TP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelatio
     }
 
 
-    public String getUnaryOpName() {
-        return unaryOpName;
-    }
-
     public JenaGraphOrBindings eval(JenaGraphOrBindings dataset) {
 
         QueryIterator exec = Algebra.exec(bgp, dataset.getContent());
@@ -56,8 +63,9 @@ public class TP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelatio
             res.add(exec.next());
         }
 
-        dataset.setResult(res);
-        return dataset;
+        JenaGraphOrBindings ds = new JenaGraphOrBindings();
+        ds.setResult(res);
+        return ds;
     }
 
     @Override
@@ -66,10 +74,10 @@ public class TP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelatio
     }
 
     public Node getProperty() {
-        return bgp.getTriple().getPredicate();
+        return bgp.getPattern().getList().get(0).getPredicate();
     }
 
     public Node getObject() {
-        return bgp.getTriple().getObject();
+        return bgp.getPattern().getList().get(0).getObject();
     }
 }

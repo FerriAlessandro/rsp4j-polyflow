@@ -4,6 +4,7 @@ import graph.jena.datatypes.JenaGraphOrBindings;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpTriple;
+import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
@@ -50,7 +51,11 @@ public class BGP implements UnaryOperator<JenaGraphOrBindings>, RelationToRelati
 
     public List<TP> getTPs() {
         List<TP> tps = new ArrayList<>();
-        bgp.getPattern().iterator().forEachRemaining(triple -> tps.add(new TP(new OpTriple(triple), tvgNames, unaryOpName)));
+        bgp.getPattern().iterator().forEachRemaining(triple -> {
+            BasicPattern pattern = new BasicPattern();
+            pattern.add(triple);
+            tps.add(new TP(new OpBGP(pattern), tvgNames, unaryOpName));
+        });
         return tps;
     }
 
