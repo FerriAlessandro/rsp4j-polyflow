@@ -60,7 +60,7 @@ public class CSpriteTest {
         Node p = createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
         Node o = createVariable("type");
         Triple t = new Triple(s, p, o);
-        TP tp = new TP(new OpTriple(t), null, null);
+        TP tp = new TP(new OpBGP(t), null, null);
         CSpriteR2R cSpriteR2R = new CSpriteR2R(tp, hierarchySchema);
         cSpriteR2R.findTypes();
         assertEquals(Set.of("http://test/Warm", "http://test/Green", "http://test/Blue", "http://test/Violet", "http://test/Cool", "http://test/Orange"), cSpriteR2R.getQueriedTypes());
@@ -74,7 +74,7 @@ public class CSpriteTest {
         Node p = type.asNode();
         Node o = createURI("http://test/Warm");
         Triple t = new Triple(s, p, o);
-        TP tp = new TP(new OpTriple(t), null, null);
+        TP tp = new TP(new OpTriple(t).asBGP(), null, null);
         CSpriteR2R cSpriteR2R = new CSpriteR2R(tp, hierarchySchema);
         assertEquals(Set.of("http://test/Warm"), cSpriteR2R.getQueriedTypes());
     }

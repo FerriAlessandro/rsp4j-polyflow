@@ -6,6 +6,6 @@ import org.streamreasoning.rsp4j.api.secret.content.Content;
 public class OnMatch implements ReportingStrategy {
     @Override
     public boolean match(Window w, Content c, long tapp, long tsys) {
-        return c.isClosed();
+        return c.visit(this);
     }
 }

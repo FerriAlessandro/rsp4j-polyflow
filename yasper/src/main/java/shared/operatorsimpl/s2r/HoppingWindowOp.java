@@ -124,9 +124,8 @@ public class HoppingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
 
         do {
             log.debug("Computing Window [" + o_i + "," + (o_i + width) + ") if absent");
-
             active_windows
-                    .computeIfAbsent(new WindowImpl(o_i, o_i + width), x -> cf.create());
+                    .computeIfAbsent(new WindowImpl(o_i, o_i + width), window -> cf.create(window));
             o_i += slide;
 
         } while (o_i <= t_e);

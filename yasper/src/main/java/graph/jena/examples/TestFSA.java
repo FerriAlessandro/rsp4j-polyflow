@@ -100,19 +100,24 @@ public class TestFSA {
 
 // Drive the FSM with a series of events: eventA, eventA, eventA
 //
+        System.out.println(foo.state);
+
         fsm.onEvent(foo, eventA);  // stateA(EventA) -> stateB/actionA
+
+        System.out.println(foo.state);
 
         foo.setBar(true);
 
         fsm.onEvent(foo, eventA);  // stateB(EventA) -> stateB/NOOP
 
         foo.setBar(false);
+        System.out.println(foo.state);
 
         fsm.onEvent(foo, eventB);  // stateB(EventA) -> stateC/NOOP
 
         System.out.println(foo.state);
 
-        foo.history.forEach(System.out::println);
+//        foo.history.forEach(System.out::println);
 
     }
 
@@ -138,13 +143,13 @@ public class TestFSA {
     public static class Foo {
 
         @State
-        Graph state;   // Memory Persister requires a String
+        String state;   // Memory Persister requires a String
 
         List<String> history = new ArrayList<>();
 
         boolean bar;
 
-        public Graph getState() {
+        public String getState() {
             return state;
         }
 

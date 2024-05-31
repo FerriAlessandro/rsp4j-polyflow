@@ -10,7 +10,7 @@ import org.streamreasoning.rsp4j.api.secret.content.Content;
  * strategies to define their reporting policy.
  **/
 public interface ReportingStrategy {
-    boolean match(Window w, Content c, long tapp, long tsys);
+    bogit olean match(Window w, Content c, long tapp, long tsys);
 
 }
 

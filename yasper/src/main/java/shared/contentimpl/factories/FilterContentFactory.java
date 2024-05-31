@@ -1,6 +1,7 @@
 package shared.contentimpl.factories;
 
 import graph.jena.content.EmptyContent;
+import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.content.ContentFactory;
 import shared.contentimpl.content.FilterContent;
@@ -31,7 +32,7 @@ public class FilterContentFactory<I, W, R>  implements ContentFactory<I, W, R> {
     }
 
     @Override
-    public Content<I, W, R> create() {
+    public Content<I, W, R> create(Window w) {
         return new FilterContent<>(f1, f2, sumR, emptyContent, predicate);
     }
 }

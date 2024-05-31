@@ -113,7 +113,7 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
         log.debug("Calculating the Windows to Open. First one opens at [" + o_i + "] and closes at [" + t_e + "]");
         log.debug("Computing Window [" + o_i + "," + t_e + ") if absent");
         Window w;
-        active_windows.computeIfAbsent(w = new WindowImpl(o_i, t_e), window -> cf.create());
+        active_windows.computeIfAbsent(w = new WindowImpl(o_i, t_e), window -> cf.create(window));
         return w;
     }
 
