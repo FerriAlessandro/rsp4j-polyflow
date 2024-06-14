@@ -12,7 +12,7 @@ public interface Content<I, W, R> {
 
     R coalesce();
 
-    default boolean visit(ReportingStrategy s){
+    default boolean match(){
         return false;
     }
 

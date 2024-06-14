@@ -71,7 +71,7 @@ public class polyflowExampleCEP {
         Report report = new DisjunctiveReport();
 //        report.add(new OnEviction());
         report.add(new OnMatch());
-        report.add(new OnContentChange());
+        //report.add(new OnContentChange());
 
         Tick tick = Tick.TIME_DRIVEN;
         ReportGrain report_grain = ReportGrain.SINGLE;

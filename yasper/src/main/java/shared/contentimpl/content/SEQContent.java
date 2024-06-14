@@ -29,7 +29,7 @@ public class SEQContent implements Content<Event<Graph>, Graph, JenaGraphOrBindi
     public List<Event<Graph>> history = new ArrayList<>();
     public List<List<Binding>> results = new ArrayList<>();
 
-
+    private boolean matched = false;
     final OpBGP patternA;
     final OpBGP patternB;
 
@@ -70,6 +70,7 @@ public class SEQContent implements Content<Event<Graph>, Graph, JenaGraphOrBindi
                     log.debug(fsm.getName() + " found and B ");
                     fsm.onEvent(this, "B", e, fsm);
                     log.debug(fsm.getName() + " is now  done [" + this.state + "]");
+                    matched = true;
 //                    String name = fsm.getName();
 //                    log.debug("Creating a new FSM ");
 //                    fsm = factory.getSeqContentFSM();
@@ -92,6 +93,15 @@ public class SEQContent implements Content<Event<Graph>, Graph, JenaGraphOrBindi
 
 
         return new JenaGraphOrBindings(reduce);
+    }
+
+    @Override
+    public boolean match(){
+        if(matched){
+            matched = false;
+            return true;
+        }
+        return false;
     }
 
     @Override
