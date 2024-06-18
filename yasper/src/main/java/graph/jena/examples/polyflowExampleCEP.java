@@ -29,6 +29,7 @@ import org.streamreasoning.rsp4j.api.secret.report.DisjunctiveReport;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnContentChange;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnMatch;
+import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
@@ -69,9 +70,10 @@ public class polyflowExampleCEP {
 
         // Engine properties
         Report report = new DisjunctiveReport();
-//        report.add(new OnEviction());
-        report.add(new OnMatch());
+        //report.add(new OnEviction());
+        //report.add(new OnMatch());
         //report.add(new OnContentChange());
+        report.add(new OnWindowClose());
 
         Tick tick = Tick.TIME_DRIVEN;
         ReportGrain report_grain = ReportGrain.SINGLE;

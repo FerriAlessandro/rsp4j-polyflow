@@ -32,6 +32,7 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
     protected Report report;
     private final long a;
     private Map<Window, Content<I, W, R>> active_windows;
+    private List<Window> reported_windows;
     private Set<Window> to_evict;
     private Map<I, Long> r_stream;
     private Map<I, Long> d_stream;
@@ -49,6 +50,7 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
         this.report = report;
         this.a = a;
         this.active_windows = new HashMap<>();
+        this.reported_windows = new ArrayList<>();
         this.to_evict = new HashSet<>();
         this.r_stream = new HashMap<>();
         this.d_stream = new HashMap<>();
@@ -90,21 +92,35 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
 
     @Override
     public Content<I, W, R> content(long t_e) {
-        Optional<Window> max = active_windows.keySet().stream()
-                .filter(w -> w.getO() < t_e && w.getC() < t_e)
-                .max(Comparator.comparingLong(Window::getC));
+        if(!reported_windows.isEmpty()){
+            return reported_windows.stream()
+                    .max(Comparator.comparingLong(Window::getC))
+                    .map(w->(active_windows.get(w))).get();
+        }
+        //Else return the last window closed
+        else {
+            Optional<Window> max = active_windows.keySet().stream()
+                    .filter(w -> w.getO() < t_e && w.getC() >= t_e)
+                    .max(Comparator.comparingLong(Window::getC));
 
-        if (max.isPresent())
-            return active_windows.get(max.get());
+            if (max.isPresent())
+                return active_windows.get(max.get());
 
-        return cf.createEmpty();
+            return cf.createEmpty();
+        }
     }
 
     @Override
     public List<Content<I, W, R>> getContents(long t_e) {
-        return active_windows.keySet().stream()
-                .filter(w -> w.getO() < t_e && t_e < w.getC())
-                .map(active_windows::get).collect(Collectors.toList());
+        if(!reported_windows.isEmpty()){
+            return reported_windows.stream()
+                    .max(Comparator.comparingLong(Window::getC))
+                    .map(w->Collections.singletonList(active_windows.get(w))).get();
+        }
+        else
+            return active_windows.keySet().stream()
+                    .filter(w -> w.getO() < t_e && t_e < w.getC())
+                    .map(active_windows::get).collect(Collectors.toList());
     }
 
 
@@ -151,6 +167,7 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
 
         Content<I, W, R> content = active_windows.get(lastestWindow);
 
+
 //        r_stream.entrySet().stream().filter(ee -> ee.getValue() < lastestWindow.getO()).forEach(ee -> d_stream.put(ee.getKey(), ee.getValue()));
 //
 //        r_stream.entrySet().stream().filter(ee -> ee.getValue() >= lastestWindow.getO()).map(Map.Entry::getKey).forEach(content::add);
@@ -159,6 +176,7 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
 //        content.add(arg);
 
         if (report.report(lastestWindow, content, t_e, System.currentTimeMillis())) {
+            reported_windows.add(lastestWindow);
             ticker.tick(t_e, lastestWindow);
         }
 
@@ -188,5 +206,6 @@ public class SlidingWindowOp<I, W, R extends Iterable<?>> implements StreamToRel
     public void evict() {
         to_evict.forEach(active_windows::remove);
         to_evict.clear();
+        reported_windows = new ArrayList<>();
     }
 }

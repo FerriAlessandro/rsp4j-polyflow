@@ -92,7 +92,7 @@ public class StreamToRelationOpTest {
         //WHEN THE EVENT WITH TS=4000 ARRIVES, THE WINDOW [3000, 4000) DOES NOT CLOSE, BUT THE WINDOW [2000, 3000) CLOSES AND IT'S REPORTED WITH ITS CONTENT (GRAPH 1)
 
         tvg.materialize(4000);
-        Content<Graph, Graph, JenaGraphOrBindings> content = accumulatorContentFactory.create();
+        Content<Graph, Graph, JenaGraphOrBindings> content = accumulatorContentFactory.create(null);
         content.add(graph1);
         JenaGraphOrBindings expected = content.coalesce();
 
@@ -123,7 +123,7 @@ public class StreamToRelationOpTest {
         //ADD EVENT AT TIME 7000 SO THAT WINDOW [5000, 6000) IS REPORTED
         s2rOp.windowing(Graph.emptyGraph, 7000);
 
-        content = accumulatorContentFactory.create();
+        content = accumulatorContentFactory.create(null);
         content.add(graph3);
         content.add(graph4);
         expected = content.coalesce();
